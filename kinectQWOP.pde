@@ -26,6 +26,7 @@ void setup() {
   torso.setPosition(width/2, height/2);
   torso.setStroke(255, 0, 0);
   torso.setFill(255, 0, 0);
+  torso.setFriction(10);
   world.add(torso);
 
   FBox armL = new FBox(10, 80);
@@ -50,28 +51,43 @@ void setup() {
   thighL.setPosition(width/2-(torso.getWidth()-thighL.getWidth())/2, height/2+torso.getHeight());
   thighL.setFill(123, 64, 45);
   thighL.setStroke(123, 64, 45);
+  thighL.setFriction(10);
   world.add(thighL);
 
   FBox thighR = new FBox(10, 40);
   thighR.setPosition(width/2+(torso.getWidth()-thighL.getWidth())/2, height/2+torso.getHeight());
   thighR.setFill(123, 64, 45);
   thighR.setStroke(123, 64, 45);
+  thighR.setFriction(10);
   world.add(thighR);
-  
-  FBox calfL = new FBox(10,40);
-  calfL.setPosition(width/2-(torso.getWidth()-calfL.getWidth())/2, height/2+torso.getHeight()+thighL.getHeight());
+
+  FBox calfL = new FBox(10, 40);
+  calfL.setPosition(width/2-(torso.getWidth()-calfL.getWidth())/2, height/2+torso.getHeight()+thighL.getHeight()/2);
   calfL.setFill(123, 64, 45);
   calfL.setStroke(123, 64, 45);
+  calfL.setFriction(10);
   world.add(calfL);
-  
-  FBox calfR = new FBox(10,40);
+
+  FBox calfR = new FBox(10, 40);
   calfR.setPosition(width/2+(torso.getWidth()-calfR.getWidth())/2, height/2+torso.getHeight()+thighR.getHeight());
   calfR.setFill(123, 64, 45);
   calfR.setStroke(123, 64, 45);
+  calfR.setFriction(10);
   world.add(calfR);
+
+  FBox footL = new FBox(20,10);
+  footL.setPosition(width/2-(torso.getWidth()+footL.getWidth())/2, height/2+torso.getHeight()/2+thighL.getHeight()+calfL.getHeight());
+  footL.setFill(123, 64, 45);
+  footL.setStroke(123, 64, 45);
+  footL.setFriction(10);
+  world.add(footL);
   
-  //FBox footL = new FBox();
-  //footL.setPosition(width/2+(torso.getWidth()+thighL.get
+  FBox footR = new FBox(20,10);
+  footR.setPosition(width/2+(torso.getWidth()+footR.getWidth())/2, height/2+torso.getHeight()/2+thighR.getHeight()+calfR.getHeight());
+  footR.setFill(123, 64, 45);
+  footR.setStroke(123, 64, 45);
+  footR.setFriction(10);
+  world.add(footR);
 
   FDistanceJoint jointTorsoArmL = new FDistanceJoint(torso, armL);
   jointTorsoArmL.setLength(0);
@@ -88,22 +104,46 @@ void setup() {
   jointTorsoHead.setAnchor1(0, -40);
   jointTorsoHead.setAnchor2(0, 20);
 
-  FDistanceJoint jointTorsothighL = new FDistanceJoint(torso, thighL);
-  jointTorsothighL.setLength(0);
-  jointTorsothighL.setAnchor1(-20, 40);
-  jointTorsothighL.setAnchor2(-5, -40);
+  FDistanceJoint jointTorsoThighL = new FDistanceJoint(torso, thighL);
+  jointTorsoThighL.setLength(0);
+  jointTorsoThighL.setAnchor1(-torso.getWidth()/2, torso.getHeight()/2);
+  jointTorsoThighL.setAnchor2(-thighL.getWidth()/2, -thighL.getHeight()/2);
 
-  FDistanceJoint jointTorsothighR = new FDistanceJoint(torso, thighR) ;
-  jointTorsothighR.setLength(0);
-  jointTorsothighR.setAnchor1(20, 40);
-  jointTorsothighR.setAnchor2(5, -40);
+  FDistanceJoint jointTorsoThighR = new FDistanceJoint(torso, thighR) ;
+  jointTorsoThighR.setLength(0);
+  jointTorsoThighR.setAnchor1(torso.getWidth()/2, torso.getHeight()/2);
+  jointTorsoThighR.setAnchor2(thighR.getWidth()/2, -thighR.getHeight()/2);
 
+  FDistanceJoint jointThighLCalfL = new FDistanceJoint(thighL, calfL);
+  jointThighLCalfL.setLength(0);
+  jointThighLCalfL.setAnchor1(-thighL.getWidth()/2, thighL.getHeight()/2);
+  jointThighLCalfL.setAnchor2(-calfL.getWidth()/2, -calfL.getHeight()/2);
+  
+  FDistanceJoint jointThighRCalfR = new FDistanceJoint(thighR, calfR);
+  jointThighRCalfR.setLength(0);
+  jointThighRCalfR.setAnchor1(-thighR.getWidth()/2, thighR.getHeight()/2);
+  jointThighRCalfR.setAnchor2(-calfR.getWidth()/2, -calfR.getHeight()/2);
+
+  FDistanceJoint jointCalfLFootL = new FDistanceJoint(calfL, footL);
+  jointCalfLFootL.setLength(0);
+  jointCalfLFootL.setAnchor1(calfL.getWidth()/2, calfL.getHeight()/2);
+  jointCalfLFootL.setAnchor2(0, -footL.getHeight()/2);
+  
+  FDistanceJoint jointCalfRFootR = new FDistanceJoint(calfR, footR);
+  jointCalfRFootR.setLength(0);
+  jointCalfRFootR.setAnchor1(calfR.getWidth()/2, calfR.getHeight()/2);
+  jointCalfRFootR.setAnchor2(0, -footR.getHeight()/2);
+  
   //Construct a revolute joint between two bodies given an anchor position.
   world.add(jointTorsoArmL);
   world.add(jointTorsoArmR);
   world.add(jointTorsoHead);
-  world.add(jointTorsothighL);
-  world.add(jointTorsothighR);
+  world.add(jointTorsoThighL);
+  world.add(jointTorsoThighR);
+  world.add(jointThighLCalfL);
+  world.add(jointThighRCalfR);
+  world.add(jointCalfLFootL);
+  world.add(jointCalfRFootR);
 }
 
 void draw() {
