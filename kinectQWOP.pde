@@ -1,11 +1,12 @@
-//Cameron sucks.
-
+//!(Cameron sucks);
+//http://www.ricardmarxer.com/fisica/reference/index.html
 
 // Import the repository.
 import fisica.*;
 
 // Declare a reference to the repository.
 FWorld world;
+FBox footL;
 
 final int minWin = 0;
 final int maxWin = 10300;
@@ -175,10 +176,21 @@ void draw() {
 }
 
 void keyPressed() {
-  if (keyCode == 39) { //right arrow
+  if (keyCode == 81) { //Q
+    footL.setHeight(footL.getHeight()-1);
+  } 
+  if (keyCode == 87) { //W
     
-  } else {
+  } 
+  if (keyCode == 79) { //O
+    
+  } 
+  if (keyCode == 80) { //P
+    
+  } 
+   
    
   }
-}
+
+
 
