@@ -1,8 +1,4 @@
-
-
 // the viewport  
-
-
 class ViewPort {
 
   // this class provdides a viewport (camera view) for a 
