@@ -4,6 +4,9 @@ import fisica.*;
 // Declare a reference to the repository.
 FWorld world;
 
+final int minWin = 0;
+final int maxWin = 10300;
+
 //http://www.ricardmarxer.com/fisica/reference/index.html
 void setup() {
   size(800, 400);
@@ -106,13 +109,13 @@ void setup() {
 
   FDistanceJoint jointTorsoThighL = new FDistanceJoint(torso, thighL);
   jointTorsoThighL.setLength(0);
-  jointTorsoThighL.setAnchor1(-torso.getWidth()/2, torso.getHeight()/2);
-  jointTorsoThighL.setAnchor2(-thighL.getWidth()/2, -thighL.getHeight()/2);
+  jointTorsoThighL.setAnchor1(-torso.getWidth()/2+thighL.getWidth()/2, torso.getHeight()/2);
+  jointTorsoThighL.setAnchor2(0, -thighL.getHeight()/2);
 
   FDistanceJoint jointTorsoThighR = new FDistanceJoint(torso, thighR) ;
   jointTorsoThighR.setLength(0);
-  jointTorsoThighR.setAnchor1(torso.getWidth()/2, torso.getHeight()/2);
-  jointTorsoThighR.setAnchor2(thighR.getWidth()/2, -thighR.getHeight()/2);
+  jointTorsoThighR.setAnchor1(torso.getWidth()/2-thighR.getWidth()/2, torso.getHeight()/2);
+  jointTorsoThighR.setAnchor2(0, -thighR.getHeight()/2);
 
   FDistanceJoint jointThighCalfL = new FDistanceJoint(thighL, calfL);
   jointThighCalfL.setLength(0);
@@ -121,8 +124,8 @@ void setup() {
   
   FDistanceJoint jointThighCalfR = new FDistanceJoint(thighR, calfR);
   jointThighCalfR.setLength(0);
-  jointThighCalfR.setAnchor1(0, thighR.getHeight()/2);
-  jointThighCalfR.setAnchor2(0, -calfR.getHeight()/2);
+  jointThighCalfR.setAnchor1(-thighR.getWidth()/2, thighR.getHeight()/2);
+  jointThighCalfR.setAnchor2(-calfR.getWidth()/2, -calfR.getHeight()/2);
   //jointThighCalfR.setDamping(0);
   jointThighCalfR.setFrequency(10);
 
@@ -166,5 +169,13 @@ void draw() {
   world.step();
   // Draw the simulation
   world.draw(this);
+}
+
+void keyPressed() {
+  if (keyCode == 39) { //right arrow
+    
+  } else {
+   
+  }
 }
 
