@@ -1,4 +1,4 @@
-//!(Cameron sucks);
+//(Cameron sucks);
 //http://www.ricardmarxer.com/fisica/reference/index.html
 
 // Import the repository.
@@ -34,6 +34,7 @@ void setup() {
   footL.setFill(255);
   footL.setStroke(255);
   footL.setFriction(10);
+  footL.setGroupIndex(-1);
   world.add(footL);
 
   footR = new FBox(25, 10);
@@ -41,6 +42,7 @@ void setup() {
   footR.setFill(255);
   footR.setStroke(255);
   footR.setFriction(10);
+  footR.setGroupIndex(-1);
   world.add(footR);
 
   calfL = new FBox(10, 40);
@@ -48,6 +50,7 @@ void setup() {
   calfL.setFill(123, 64, 45);
   calfL.setStroke(123, 64, 45);
   calfL.setFriction(10);
+  calfL.setGroupIndex(-2);
   world.add(calfL);
 
   calfR = new FBox(10, 40);
@@ -55,6 +58,7 @@ void setup() {
   calfR.setFill(123, 64, 45);
   calfR.setStroke(123, 64, 45);
   calfR.setFriction(10);
+  calfR.setGroupIndex(-2);
   world.add(calfR);
 
   thighL = new FBox(10, 40);
@@ -62,6 +66,7 @@ void setup() {
   thighL.setFill(123, 64, 45);
   thighL.setStroke(123, 64, 45);
   thighL.setFriction(10);
+  thighL.setGroupIndex(-3);
   world.add(thighL);
 
   thighR = new FBox(10, 40);
@@ -69,6 +74,7 @@ void setup() {
   thighR.setFill(123, 64, 45);
   thighR.setStroke(123, 64, 45);
   thighR.setFriction(10);
+  thighR.setGroupIndex(-3);
   world.add(thighR);
 
   armL = new FBox(10, 80);
@@ -180,9 +186,14 @@ void keyPressed() {
     thighL.addImpulse(20,20);
   } 
   if (keyCode == 87) { //W
-  } 
+    thighR.addImpulse(20,20);
+  }
   if (keyCode == 79) { //O
+    calfR.addImpulse(20,20);
+    footR.addImpulse(20,20);
   } 
   if (keyCode == 80) { //P
+    calfL.addImpulse(20,20);
+    footL.addImpulse(20,20);
   }
 }
