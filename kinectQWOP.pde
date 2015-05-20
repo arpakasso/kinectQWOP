@@ -1,4 +1,4 @@
-//(Cameron sucks);
+//!!!(Cameron sucks);
 //http://www.ricardmarxer.com/fisica/reference/index.html
 
 // Import the repository.
@@ -34,7 +34,7 @@ void setup() {
   footL.setFill(255);
   footL.setStroke(255);
   footL.setFriction(10);
-  footL.setGroupIndex(-1);
+  footL.setGroupIndex(-2);
   world.add(footL);
 
   footR = new FBox(25, 10);
@@ -42,7 +42,7 @@ void setup() {
   footR.setFill(255);
   footR.setStroke(255);
   footR.setFriction(10);
-  footR.setGroupIndex(-1);
+  footR.setGroupIndex(-2);
   world.add(footR);
 
   calfL = new FBox(10, 40);
@@ -183,17 +183,19 @@ void draw() {
 
 void keyPressed() {
   if (keyCode == 81) { //Q
-    thighL.addImpulse(20,20);
+    thighL.addImpulse(40,40);
+    calfL.addTorque(20);
   } 
   if (keyCode == 87) { //W
-    thighR.addImpulse(20,20);
+    thighR.addImpulse(40,40);
+    calfR.addTorque(20);
   }
   if (keyCode == 79) { //O
-    calfR.addImpulse(20,20);
-    footR.addImpulse(20,20);
+    calfR.addImpulse(40,40);
+    footR.addImpulse(40,40);
   } 
   if (keyCode == 80) { //P
-    calfL.addImpulse(20,20);
-    footL.addImpulse(20,20);
+    calfL.addImpulse(40,40);
+    footL.addImpulse(40,40);
   }
 }
