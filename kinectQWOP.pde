@@ -61,6 +61,7 @@ void draw() {
   // Draw the simulation
   world.draw(this);
   distance = torso.getX()-width/2;
+  distance = map(distance,-width/2,width/2,-3,3);
   String dist = distance + "";
   dist = dist.substring(0,dist.indexOf(".")+2);
   text(dist+" m",width/2, height/5);
