@@ -6,7 +6,7 @@ import fisica.*;
 
 // Declare a reference to the repository.
 FWorld world;
-FBox footL, footR, calfL, calfR, thighL, thighR, armL, armR, torso;
+FBox floor, footL, footR, calfL, calfR, thighL, thighR, armL, armR, torso;
 FCircle head;
 
 final int minWin = 0;
@@ -26,7 +26,11 @@ void setup() {
   world.setGravity(0, 100);
   // Enable the perimeter walls of the stage.
   world.setEdges();
-
+  
+  floor = new FBox(width-10,2);
+  floor.setPosition(width/2,height-5);
+  floor.setStatic(true);
+  world.add(floor);
   // Create new body.left
   // View: http://www.ricardmarxer.com/fisica/reference/fisica/FBox.html
   footL = new FBox(25, 10);
