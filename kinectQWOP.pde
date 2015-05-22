@@ -1,4 +1,4 @@
-//!!!(Cameron sucks);
+//!!!!(Cameron sucks);
 //http://www.ricardmarxer.com/fisica/reference/index.html
 
 // Import the repository.
@@ -14,6 +14,7 @@ final int maxWin = 10300;
 
 void setup() {
   size(800, 400);
+  background(100);
   smooth();
   // Initialize the repository.
   // View: http://www.ricardmarxer.com/fisica/reference/fisica/Fisica.html
@@ -25,8 +26,45 @@ void setup() {
   // Enable gravity (x, y).
   world.setGravity(0, 100);
   // Enable the perimeter walls of the stage.
-  world.setEdges();
   
+  createGame();
+}
+
+void draw() {
+  background(100);
+  // Execute a step of the simulation
+  world.step();
+  // Draw the simulation
+  world.draw(this);
+  
+  if(head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
+    endGame();
+}
+
+void keyPressed() {
+  if (keyCode == 81) { //Q
+    thighL.addImpulse(40,40);
+    calfL.addTorque(20);
+  } 
+  if (keyCode == 87) { //W
+    thighR.addImpulse(40,40);
+    calfR.addTorque(20);
+  }
+  if (keyCode == 79) { //O
+    calfR.addImpulse(40,40);
+    footR.addImpulse(40,40);
+  } 
+  if (keyCode == 80) { //P
+    calfL.addImpulse(40,40);
+    footL.addImpulse(40,40);
+  }
+  if (keyCode == 32) { //Spacebar
+    resetGame();
+  }
+}
+
+void createGame(){  
+  world.setEdges();
   floor = new FBox(width-10,2);
   floor.setPosition(width/2,height-5);
   floor.setStatic(true);
@@ -177,29 +215,14 @@ void setup() {
   world.add(jointCalfFootR2);
 }
 
-void draw() {
-  background(100);
-  // Execute a step of the simulation
-  world.step();
-  // Draw the simulation
-  world.draw(this);
+void endGame(){  //freezes and displays score
+  for(Object o:world.getBodies())
+    ((FBody)o).setStatic(true);
+  
 }
 
-void keyPressed() {
-  if (keyCode == 81) { //Q
-    thighL.addImpulse(40,40);
-    calfL.addTorque(20);
-  } 
-  if (keyCode == 87) { //W
-    thighR.addImpulse(40,40);
-    calfR.addTorque(20);
-  }
-  if (keyCode == 79) { //O
-    calfR.addImpulse(40,40);
-    footR.addImpulse(40,40);
-  } 
-  if (keyCode == 80) { //P
-    calfL.addImpulse(40,40);
-    footL.addImpulse(40,40);
-  }
+void resetGame(){
+  for(Object o:world.getBodies())
+    world.remove((FBody)o);
+  createGame();
 }
