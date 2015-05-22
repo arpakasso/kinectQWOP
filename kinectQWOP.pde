@@ -1,4 +1,16 @@
-//!!!!(Cameron sucks);
+import ddf.minim.spi.*;
+import ddf.minim.signals.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
+
+boolean david;
+Minim dj;
+AudioPlayer breakNeck;
+
+
+//!!!!!(Cameron sucks);
 //http://www.ricardmarxer.com/fisica/reference/index.html
 
 // Import the repository.
@@ -13,6 +25,9 @@ final int minWin = 0;
 final int maxWin = 10300;
 
 void setup() {
+  david = false;
+  dj = new Minim(this);
+  breakNeck = dj.loadFile("neckSnap.wav");
   size(800, 400);
   background(100);
   smooth();
@@ -216,6 +231,11 @@ void createGame(){
 }
 
 void endGame(){  //freezes and displays score
+if(!david)
+{
+  breakNeck.play();
+  david = true;
+}
   for(Object o:world.getBodies())
     ((FBody)o).setStatic(true);
   
@@ -224,5 +244,7 @@ void endGame(){  //freezes and displays score
 void resetGame(){
   for(Object o:world.getBodies())
     world.remove((FBody)o);
+  david = false;
+  breakNeck.rewind();  
   createGame();
 }
