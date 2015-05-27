@@ -51,7 +51,7 @@ void setup() {
 
   // Create a reference to the repository.
   // View: http://www.ricardmarxer.com/fisica/reference/fisica/FWorld.html
-  world = new FWorld();
+  world = new FWorld(0,0,10300,height);
   // Enable gravity (x, y).
   world.setGravity(0, 100);
   // Enable the perimeter walls of the stage.
@@ -83,7 +83,8 @@ void draw() {
   String dist = distance + "";
   dist = dist.substring(0,dist.indexOf(".")+2);
   text(dist+" m",width/2, height/5);
-  //camera1.dolly(8);
+  
+   cameron.truck(width/2-torso.getX());
   
   cameron.feed();
   if (head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
