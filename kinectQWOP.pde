@@ -1,9 +1,12 @@
+import damkjer.ocd.*;
 import ddf.minim.spi.*;
 import ddf.minim.signals.*;
 import ddf.minim.*;
 import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
+
+Camera camera1;
 
 boolean david;
 Minim dj;
@@ -28,11 +31,12 @@ final int minWin = 0;
 final int maxWin = 10300;
 
 void setup() {
+  
   david = false;
   distance = 0;
   dj = new Minim(this);
   breakNeck = dj.loadFile("neckSnap.wav");
-  size(800, 400);
+  size(800, 400,P3D);
   background(100);
   smooth();
 
@@ -52,6 +56,8 @@ void setup() {
   // Enable the perimeter walls of the stage.
 
   createGame();
+  camera1 = new Camera(this,width/2,height/2,3000);
+
 }
 
 void draw() {
@@ -65,6 +71,9 @@ void draw() {
   String dist = distance + "";
   dist = dist.substring(0,dist.indexOf(".")+2);
   text(dist+" m",width/2, height/5);
+  //camera1.dolly(8);
+  
+  camera1.feed();
   if (head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
     endGame();
 }
