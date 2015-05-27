@@ -6,7 +6,7 @@ import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
-Camera camera1;
+Camera cameron;
 
 boolean david;
 Minim dj;
@@ -56,7 +56,7 @@ void setup() {
   // Enable the perimeter walls of the stage.
 
   createGame();
-  camera1 = new Camera(this,width/2,height/2,3000);
+  cameron = new Camera(this,width/2,height/2,336, width/2, height/2, 0);
 
 }
 
@@ -73,7 +73,7 @@ void draw() {
   text(dist+" m",width/2, height/5);
   //camera1.dolly(8);
   
-  camera1.feed();
+  cameron.feed();
   if (head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
     endGame();
 }
@@ -101,10 +101,11 @@ void keyPressed() {
 }
 
 void createGame() {  
-  world.setEdges();
-  floor = new FBox(width-10, 2);
+  //world.setEdges();
+  floor = new FBox(width*10, 2);
   floor.setPosition(width/2, height-5);
   floor.setStatic(true);
+  floor.setGrabbable(false);
   world.add(floor);
   // Create new body.left
   // View: http://www.ricardmarxer.com/fisica/reference/fisica/FBox.html
@@ -258,8 +259,9 @@ void endGame() {  //freezes and displays score
     breakNeck.play();
     david = true;
   }
-  for (Object o : world.getBodies ())
+  for (Object o : world.getBodies ()){
     ((FBody)o).setStatic(true);
+  }
 }
 
 void resetGame() {
