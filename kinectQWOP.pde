@@ -7,7 +7,7 @@ import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
 Camera cameron;
-
+int treesX;
 boolean david;
 boolean wesley; //create game
 Minim dj;
@@ -28,8 +28,6 @@ FWorld world;
 FBox floor, footL, footR, calfL, calfR, thighL, thighR, armL, armR, torso;
 FCircle head;
 
-final int minWin = 0;
-final int maxWin = 10300;
 
 void setup() {
   wesley = false;
@@ -73,6 +71,20 @@ void draw() {
   // Execute a step of the simulation
   else //the game n stuff
   {
+    noStroke();
+    fill(135,206,250); //sky blue
+    rect(0,0,width*500, height); //the sky
+    fill(34,139,34);   //forest green
+    rect(0,height/8 * 7,width*500,height); //grass
+    for(int i = 0; i < 10300; i+=225)
+    {
+      fill(139,69,19); //a good saddle brown
+      rect(40+i, height/8*7 - 125, 30, 125); //tree bark woof
+      fill(34,139,34); //tree green
+      ellipse(55+i, height/8*7 - 125, 80, 150); //leaves n stoof
+    
+    }
+    
     world.step();
     // Draw the simulation
     world.draw(this);
@@ -80,6 +92,7 @@ void draw() {
     distance = map(distance, -width/2, width/2, -3, 3);
     String dist = distance + "";
     dist = dist.substring(0, dist.indexOf(".")+2);
+    fill(0);
     text(dist+" m", torso.getX(), height/5);
 
     if (torso.getX() != cameron.position()[0])
@@ -90,6 +103,8 @@ void draw() {
 //      endGame();
   }
 }
+
+
 
 void keyPressed() {
   if (keyCode == 83) { //s
@@ -118,7 +133,7 @@ void keyPressed() {
 
 void createGame() {  
   //world.setEdges();
-  floor = new FBox(width*10, 2);
+  floor = new FBox(width*72, 2);
   floor.setPosition(width/2, height-5);
   floor.setStatic(true);
   floor.setGrabbable(false);
@@ -284,6 +299,7 @@ void resetGame() {
   for (Object o : world.getBodies ())
     world.remove((FBody)o);
   david = false;
+  treesX = 0;
   breakNeck.rewind();  
   createGame();
 }
