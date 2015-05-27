@@ -9,6 +9,7 @@ import ddf.minim.effects.*;
 Camera cameron;
 
 boolean david;
+boolean wesley; //create game
 Minim dj;
 AudioPlayer breakNeck;
 float distance;
@@ -31,7 +32,7 @@ final int minWin = 0;
 final int maxWin = 10300;
 
 void setup() {
-  
+  wesley = false;
   david = false;
   distance = 0;
   dj = new Minim(this);
@@ -62,7 +63,18 @@ void setup() {
 
 void draw() {
   background(100);
+  if(!wesley)    //title screen
+    {
+      fill(0);
+      rect(0,0,width,height);
+      fill(255);
+      text("Kinect QWOP", width/2,height/5);
+      text("Press 'S' to begin", width/2, height/5 * 3);
+      
+    }
   // Execute a step of the simulation
+  else //the game n stuff
+  {
   world.step();
   // Draw the simulation
   world.draw(this);
@@ -76,9 +88,13 @@ void draw() {
   cameron.feed();
   if (head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
     endGame();
+  }
 }
 
 void keyPressed() {
+  if(keyCode == 83){ //s
+    wesley = true;
+  }
   if (keyCode == 81) { //Q
     thighL.addImpulse(40, 40);
     calfL.addTorque(20);
