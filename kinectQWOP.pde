@@ -37,7 +37,7 @@ void setup() {
   distance = 0;
   dj = new Minim(this);
   breakNeck = dj.loadFile("neckSnap.wav");
-  size(800, 400,P3D);
+  size(800, 400, P3D);
   background(100);
   smooth();
 
@@ -51,49 +51,48 @@ void setup() {
 
   // Create a reference to the repository.
   // View: http://www.ricardmarxer.com/fisica/reference/fisica/FWorld.html
-  world = new FWorld(0,0,10300,height);
+  world = new FWorld(0, 0, 10300, height);
   // Enable gravity (x, y).
   world.setGravity(0, 100);
   // Enable the perimeter walls of the stage.
 
   createGame();
-  cameron = new Camera(this,width/2,height/2,336, width/2, height/2, 0);
-
+  cameron = new Camera(this, width/2, height/2, 336, width/2, height/2, 0);
 }
 
 void draw() {
   background(100);
-  if(!wesley)    //title screen
-    {
-      fill(0);
-      rect(0,0,width,height);
-      fill(255);
-      text("Kinect QWOP", width/2,height/5);
-      text("Press 'S' to begin", width/2, height/5 * 3);
-      
-    }
+  if (!wesley)    //title screen
+  {
+    fill(0);
+    rect(0, 0, width, height);
+    fill(255);
+    text("Kinect QWOP", width/2, height/5);
+    text("Press 'S' to begin", width/2, height/5 * 3);
+  }
   // Execute a step of the simulation
   else //the game n stuff
   {
-  world.step();
-  // Draw the simulation
-  world.draw(this);
-  distance = torso.getX()-width/2;
-  distance = map(distance,-width/2,width/2,-3,3);
-  String dist = distance + "";
-  dist = dist.substring(0,dist.indexOf(".")+2);
-  text(dist+" m",width/2, height/5);
-  
-   cameron.truck(width/2-torso.getX());
-  
-  cameron.feed();
-  if (head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
-    endGame();
+    world.step();
+    // Draw the simulation
+    world.draw(this);
+    distance = torso.getX()-width/2;
+    distance = map(distance, -width/2, width/2, -3, 3);
+    String dist = distance + "";
+    dist = dist.substring(0, dist.indexOf(".")+2);
+    text(dist+" m", torso.getX(), height/5);
+
+    if (torso.getX() != cameron.position()[0])
+      cameron.truck(torso.getX()-cameron.position()[0]);
+
+    cameron.feed();
+//    if (head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
+//      endGame();
   }
 }
 
 void keyPressed() {
-  if(keyCode == 83){ //s
+  if (keyCode == 83) { //s
     wesley = true;
   }
   if (keyCode == 81) { //Q
@@ -276,7 +275,7 @@ void endGame() {  //freezes and displays score
     breakNeck.play();
     david = true;
   }
-  for (Object o : world.getBodies ()){
+  for (Object o : world.getBodies ()) {
     ((FBody)o).setStatic(true);
   }
 }
