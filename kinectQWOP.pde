@@ -13,12 +13,13 @@ Camera cameron;
 
 boolean david;
 boolean wesley; //create game
+
 Minim dj;
 AudioPlayer breakNeck;
 float distance, avgCoM, currCoM;
 int userID;
 PFont font;
-
+ArrayList<Float> cList;
 
 //!!!!!(Cameron sucks);
 //http://www.ricardmarxer.com/fisica/reference/index.html
@@ -35,8 +36,8 @@ FCircle head;
 void setup() {
   kinect = new SimpleOpenNI(this, SimpleOpenNI.RUN_MODE_MULTI_THREADED); //mycomp
   //kinect = new SimpleOpenNI(this, SimpleOpenNI.RUN_MODE_SINGLE_THREADED); //school maybe?
-  
-  
+
+  cList = new ArrayList<Float>();
   wesley = false;
   david = false;
   distance = 0;
@@ -65,61 +66,68 @@ void setup() {
   createGame();
   cameron = new Camera(this, width/2, height/2, 336, width/2, height/2, 0);
   kinect.enableDepth();
- kinect.enableUser();
- 
-  
-  }
- 
+  kinect.enableUser();
+}
+
 void draw() {
-  
-   kinect.update();
+
+  kinect.update();
   background(100);
-  
+
   if (!wesley)    //title screen
   {
     int[] users = kinect.getUsers();
-    if(users.length > 0)
-    userID = users[0];
-    kinect.startTrackingSkeleton(userID);
-    if (kinect.isTrackingSkeleton(userID)){
-      for(int i = 0; i < 200; i++){
-        PVector temp = new PVector();
-        kinect.getCoM(userID,temp);
-        kinect.convertRealWorldToProjective(temp,temp);
-        avgCoM += temp.y;
-      } 
-      avgCoM = avgCoM/40;
-      
-      println(thighLength('r'));
+    if (users.length > 0) {
+      userID = users[0];
+      kinect.startTrackingSkeleton(userID);
     }
-    
-    if(jumped())
-      wesley = true;
+    if (kinect.isTrackingSkeleton(userID)) {
+      text("Jump to Start", width/2, height/5 * 3);
+
+      PVector temp = new PVector();
+      kinect.getCoM(userID, temp);
+      kinect.convertRealWorldToProjective(temp, temp);
+      //      if(cList.size() != 8)
+      //        cList.add(temp.y);
+      //    
+      //      //println(thighLength('r'));
+      avgCoM = temp.y;
+    } 
+    else
+      text("Please wait...", width/2, height/5 * 3);
+
+    //    if(cList.size() == 8){
+    //      for(Float f:cList)
+    //        avgCoM += f;
+    //      avgCoM = avgCoM/8;
+    //      avgCoM = avgCoM-50;
+    //    }
+
+
     fill(0);
     rect(0, 0, width, height);
     fill(255);
     text("Kinect QWOP", width/2, height/5);
-    text("Press 'S' to begin", width/2, height/5 * 3);
-   
+    if (jumped())
+      wesley = true;
   }
   // Execute a step of the simulation
   else //the game n stuff
   {
-    
+
     noStroke();
-    fill(135,206,250); //sky blue
-    rect(0,0,width*500, height); //the sky
-    fill(34,139,34);   //forest green
-    rect(0,height/8 * 7,width*500,height); //grass
-    for(int i = 0; i < 10300; i+=225)
+    fill(135, 206, 250); //sky blue
+    rect(0, 0, width*500, height); //the sky
+    fill(34, 139, 34);   //forest green
+    rect(0, height/8 * 7, width*500, height); //grass
+    for (int i = 0; i < 10300; i+=225)
     {
-      fill(139,69,19); //a good saddle brown
+      fill(139, 69, 19); //a good saddle brown
       rect(40+i, height/8*7 - 125, 30, 125); //tree bark woof
-      fill(34,139,34); //tree green
+      fill(34, 139, 34); //tree green
       ellipse(55+i, height/8*7 - 125, 80, 150); //leaves n stoof
-    
     }
-    
+
     world.step();
     // Draw the simulation
     world.draw(this);
@@ -134,7 +142,7 @@ void draw() {
       cameron.truck(torso.getX()-cameron.position()[0]);
 
     cameron.feed();
-    
+
     if (head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
       endGame();
   }
@@ -339,38 +347,36 @@ void resetGame() {
   createGame();
 }
 
-double thighLength(char c){
+double thighLength(char c) {
   PVector temp = new PVector();
   PVector hipJoint = new PVector();
   PVector kneeJoint = new PVector();
-  if(c == 'r'){
+  if (c == 'r') {
     //rightHipJoint
     float con1 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_RIGHT_HIP, temp);
-    if(con1 < 0.5)
+    if (con1 < 0.5)
       return -1.0;
-    kinect.convertRealWorldToProjective(temp,hipJoint);
+    kinect.convertRealWorldToProjective(temp, hipJoint);
     //rightKneeJoint
     float con2 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_RIGHT_KNEE, temp);
-    if(con2 < 0.5)
+    if (con2 < 0.5)
       return -1.0;
     kinect.convertRealWorldToProjective(temp, kneeJoint);
-  }
-  else if(c == 'l'){
+  } else if (c == 'l') {
     //leftHipJoint
     float con1 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_LEFT_HIP, temp);
-    if(con1 < 0.5)
+    if (con1 < 0.5)
       return -1.0;
-    kinect.convertRealWorldToProjective(temp,hipJoint);
+    kinect.convertRealWorldToProjective(temp, hipJoint);
     //leftKneeJoint
     float con2 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_LEFT_KNEE, temp);
-    if(con2 < 0.5)
+    if (con2 < 0.5)
       return -1.0;
     kinect.convertRealWorldToProjective(temp, kneeJoint);
-  }
-  else
+  } else
     return -1.0;
- 
-  return dist(hipJoint.x,hipJoint.y,kneeJoint.x,kneeJoint.y);
+
+  return dist(hipJoint.x, hipJoint.y, kneeJoint.x, kneeJoint.y);
 }
 
 double footHeight(char c) {
@@ -381,25 +387,23 @@ double footHeight(char c) {
     if (con1 < 0.5)
       return -1.0;
     kinect.convertRealWorldToProjective(temp, foot);
-  } 
-  else if (c == 'l') {
+  } else if (c == 'l') {
     float con2 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_LEFT_FOOT, temp);
     if (con2 < 0.5)
       return -1.0;
     kinect.convertRealWorldToProjective(temp, foot);
-  } 
-  else
+  } else
     return -1.0;
-    
-  return dist(foot.x,foot.y,foot.x,height);
+
+  return dist(foot.x, foot.y, foot.x, height);
 }
 
-boolean jumped(){
+boolean jumped() {
   PVector curr = new PVector();
-  kinect.getCoM(userID,curr);
-  kinect.convertRealWorldToProjective(curr,curr);
+  kinect.getCoM(userID, curr);
+  kinect.convertRealWorldToProjective(curr, curr);
   currCoM = curr.y;
-  float tempy = avgCoM+20;
-  println("y1: " + tempy + " y2: " + currCoM);
-  return tempy < currCoM;
+  println("y1: " + avgCoM + " y2: " + currCoM);
+  return avgCoM > currCoM;
 }
+
