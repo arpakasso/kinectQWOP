@@ -15,7 +15,7 @@ boolean david;
 boolean wesley; //create game
 Minim dj;
 AudioPlayer breakNeck;
-float distance, yONE, yTWO;
+float distance, avgCoM, currCoM;
 int userID;
 PFont font;
 
@@ -70,16 +70,10 @@ void setup() {
   
   }
  
- 
-
-
 void draw() {
   
    kinect.update();
-   
   background(100);
-  
-  
   
   if (!wesley)    //title screen
   {
@@ -88,10 +82,13 @@ void draw() {
     userID = users[0];
     kinect.startTrackingSkeleton(userID);
     if (kinect.isTrackingSkeleton(userID)){
-      PVector temp = new PVector();
-      kinect.getCoM(userID,temp);
-      kinect.convertRealWorldToProjective(temp,temp);
-      yONE = temp.y;
+      for(int i = 0; i < 200; i++){
+        PVector temp = new PVector();
+        kinect.getCoM(userID,temp);
+        kinect.convertRealWorldToProjective(temp,temp);
+        avgCoM += temp.y;
+      } 
+      avgCoM = avgCoM/40;
       
       println(thighLength('r'));
     }
@@ -401,6 +398,8 @@ boolean jumped(){
   PVector curr = new PVector();
   kinect.getCoM(userID,curr);
   kinect.convertRealWorldToProjective(curr,curr);
-  yTWO = curr.y;
-  return yONE+30 < yTWO;
+  currCoM = curr.y;
+  float tempy = avgCoM+20;
+  println("y1: " + tempy + " y2: " + currCoM);
+  return tempy < currCoM;
 }
