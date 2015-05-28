@@ -16,7 +16,7 @@ boolean wesley; //create game
 Minim dj;
 AudioPlayer breakNeck;
 float distance;
-
+int userID;
 PFont font;
 
 
@@ -33,9 +33,13 @@ FCircle head;
 
 
 void setup() {
-  
   kinect = new SimpleOpenNI(this, SimpleOpenNI.RUN_MODE_MULTI_THREADED); //mycomp
   //kinect = new SimpleOpenNI(this, SimpleOpenNI.RUN_MODE_SINGLE_THREADED); //school maybe?
+  int[] users = kinect.getUsers();
+  if(users.length > 0){
+    userID = users[0];
+  }
+  
   wesley = false;
   david = false;
   distance = 0;
@@ -319,3 +323,36 @@ void resetGame() {
   createGame();
 }
 
+double thighLength(char c){
+  PVector temp = new PVector();
+  PVector hipJoint = new PVector();
+  PVector kneeJoint = new PVector();
+  if(c == 'r'){
+    //rightHipJoint
+    float con1 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_RIGHT_HIP, temp);
+    if(con1 < 0.5)
+      return -1.0;
+    kinect.convertRealWorldToProjective(temp,hipJoint);
+    //rightKneeJoint
+    float con2 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_RIGHT_KNEE, temp);
+    if(con2 < 0.5)
+      return -1.0;
+    kinect.convertRealWorldToProjective(temp, kneeJoint);
+  }
+  else if(c == 'l'){
+    //leftHipJoint
+    float con1 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_LEFT_HIP, temp);
+    if(con1 < 0.5)
+      return -1.0;
+    kinect.convertRealWorldToProjective(temp,hipJoint);
+    //leftKneeJoint
+    float con2 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_LEFT_KNEE, temp);
+    if(con2 < 0.5)
+      return -1.0;
+    kinect.convertRealWorldToProjective(temp, kneeJoint);
+  }
+  else
+    return -1.0;
+  
+  return dist(hipJoint.x,hipJoint.y,kneeJoint.x,kneeJoint.y);
+}
