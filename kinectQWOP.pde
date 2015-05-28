@@ -6,6 +6,7 @@ import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 import SimpleOpenNI.*;
+import fisica.*;
 
 SimpleOpenNI kinect;
 
@@ -13,7 +14,7 @@ Camera cameron;
 
 boolean david;
 boolean wesley; //create game
-
+boolean stopAvg;
 Minim dj;
 AudioPlayer breakNeck;
 float distance, avgCoM, currCoM;
@@ -21,26 +22,29 @@ int userID;
 PFont font;
 ArrayList<Float> cList;
 String screentxt;
-
-//!!!!!(Cameron sucks);
+float avgFootL;
+float avgFootR;
+float avgThighL;
+float avgThighR;
+//!!!!!!!!!(Cameron sucks);
 //http://www.ricardmarxer.com/fisica/reference/index.html
 
-// Import the repository.
-import fisica.*;
-
-// Declare a reference to the repository.
 FWorld world;
 FBox floor, footL, footR, calfL, calfR, thighL, thighR, armL, armR, torso;
 FCircle head;
 
-
 void setup() {
   kinect = new SimpleOpenNI(this, SimpleOpenNI.RUN_MODE_MULTI_THREADED); //mycomp
   //kinect = new SimpleOpenNI(this, SimpleOpenNI.RUN_MODE_SINGLE_THREADED); //school maybe?
-
+  avgFootL= 0;
+  avgFootR = 0;
+  avgThighL = 0;
+  avgThighR = 0;
+  
   cList = new ArrayList<Float>();
   wesley = false;
   david = false;
+  stopAvg = false;
   distance = 0;
   dj = new Minim(this);
   breakNeck = dj.loadFile("neckSnap.wav");
@@ -71,7 +75,6 @@ void setup() {
 }
 
 void draw() {
-
   kinect.update();
   background(100);
 
@@ -81,8 +84,7 @@ void draw() {
     if (users.length > 0) {
       userID = users[0];
       kinect.startTrackingSkeleton(userID);
-    } 
-    else {
+    } else {
       screentxt = "Please wait...";
     }
 
@@ -94,10 +96,27 @@ void draw() {
       kinect.convertRealWorldToProjective(temp, temp);
       if (temp.y != 0 && cList.size() != 8)
         cList.add(temp.y);
-       fill(255,0,0);
-    } 
-    else {
+      fill(255, 0, 0);
+    } else {
       screentxt = "Please wait...";
+    }
+    
+    if (stopAvg == false && kinect.isTrackingSkeleton(userID))
+    {
+      stopAvg = true;
+      for (int i = 1; i <= 200; i++)
+      {       
+        kinect.update();
+        avgFootL += footHeight('l');
+        avgFootR += footHeight('r');
+        avgThighL += thighLength('l');
+        avgThighR += thighLength('r');
+      } 
+      avgFootL = avgFootL/40;
+      avgFootR = avgFootR/40;
+      avgThighL = avgThighL/40;
+      avgThighR = avgThighR/40;
+      //avgCoM = avgCoM/40;
     }
 
     if (cList.size() == 8) {
@@ -106,7 +125,6 @@ void draw() {
       avgCoM = avgCoM/8;
       avgCoM = avgCoM-50;
     }
-
 
     fill(0);
     rect(0, 0, width, height);
@@ -149,6 +167,34 @@ void draw() {
     if (torso.getX() != cameron.position()[0])
       cameron.truck(torso.getX()-cameron.position()[0]);
 
+    if (footHeight ('l') + 70 > avgFootL)
+  {
+    calfL.addImpulse(random(4,12), random(3,7));
+    calfL.addTorque(random(3,6));
+    footL.addImpulse(random(4,12), random(-6,-2));
+  
+  }
+  if (footHeight ('r') + 70 > avgFootR)
+  {
+    calfR.addImpulse(random(6,11), random(1,7));
+    calfR.addTorque(random(3,6));
+    footR.addImpulse(random(4,12), random(-6,-2));
+  }
+  if(thighLength('l') -70 < avgThighL)
+  {
+    thighL.addImpulse(random(6,11),random(-6,-2));
+    torso.addImpulse(random(3,6),random(3,6));
+    head.addImpulse(random(3,6),random(3,6));
+    armR.addImpulse(random(3,6),random(3,6));
+  }
+  if(thighLength('r') -70 < avgThighR)
+  {
+    thighR.addImpulse(random(6,11),random(-6,-2));
+    torso.addImpulse(random(3,6),random(3,6));
+    head.addImpulse(random(3,6),random(3,6));
+    armL.addImpulse(random(3,6),random(3,6));
+  }
+    
     cameron.feed();
 
     if (head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
@@ -345,7 +391,7 @@ void endGame() {  //freezes and displays score
   for (Object o : world.getBodies ()) {
     ((FBody)o).setStatic(true);
   }
-  if(jumped())
+  if (jumped())
     resetGame();
 }
 
