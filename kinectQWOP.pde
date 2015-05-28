@@ -20,6 +20,7 @@ float distance, avgCoM, currCoM;
 int userID;
 PFont font;
 ArrayList<Float> cList;
+String screentxt;
 
 //!!!!!(Cameron sucks);
 //http://www.ricardmarxer.com/fisica/reference/index.html
@@ -80,34 +81,41 @@ void draw() {
     if (users.length > 0) {
       userID = users[0];
       kinect.startTrackingSkeleton(userID);
+    } 
+    else {
+      screentxt = "Please wait...";
     }
+
     if (kinect.isTrackingSkeleton(userID)) {
-      text("Jump to Start", width/2, height/5 * 3);
+      screentxt = "Jump to Start";
 
       PVector temp = new PVector();
       kinect.getCoM(userID, temp);
       kinect.convertRealWorldToProjective(temp, temp);
-      //      if(cList.size() != 8)
-      //        cList.add(temp.y);
-      //    
-      //      //println(thighLength('r'));
-      avgCoM = temp.y;
+      if (temp.y != 0 && cList.size() != 8)
+        cList.add(temp.y);
+       fill(255,0,0);
     } 
-    else
-      text("Please wait...", width/2, height/5 * 3);
+    else {
+      screentxt = "Please wait...";
+    }
 
-    //    if(cList.size() == 8){
-    //      for(Float f:cList)
-    //        avgCoM += f;
-    //      avgCoM = avgCoM/8;
-    //      avgCoM = avgCoM-50;
-    //    }
+    if (cList.size() == 8) {
+      for (Float f : cList)
+        avgCoM += f;
+      avgCoM = avgCoM/8;
+      avgCoM = avgCoM-50;
+    }
 
 
     fill(0);
     rect(0, 0, width, height);
     fill(255);
     text("Kinect QWOP", width/2, height/5);
+    textSize(30);
+    text("Sway side to side", width/2, height/2);
+    textSize(48);
+    text(screentxt, width/2, height/5 * 4);
     if (jumped())
       wesley = true;
   }
@@ -337,6 +345,8 @@ void endGame() {  //freezes and displays score
   for (Object o : world.getBodies ()) {
     ((FBody)o).setStatic(true);
   }
+  if(jumped())
+    resetGame();
 }
 
 void resetGame() {
