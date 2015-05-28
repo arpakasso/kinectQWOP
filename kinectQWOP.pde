@@ -35,10 +35,7 @@ FCircle head;
 void setup() {
   kinect = new SimpleOpenNI(this, SimpleOpenNI.RUN_MODE_MULTI_THREADED); //mycomp
   //kinect = new SimpleOpenNI(this, SimpleOpenNI.RUN_MODE_SINGLE_THREADED); //school maybe?
-  int[] users = kinect.getUsers();
-  if(users.length > 0){
-    userID = users[0];
-  }
+  
   
   wesley = false;
   david = false;
@@ -69,16 +66,27 @@ void setup() {
   cameron = new Camera(this, width/2, height/2, 336, width/2, height/2, 0);
   kinect.enableDepth();
  kinect.enableUser();
-}
+ 
+  
+  }
+ 
+ 
+
 
 void draw() {
   
    kinect.update();
+   
   background(100);
   
   if (!wesley)    //title screen
   {
-    
+    int[] users = kinect.getUsers();
+    if(users.length > 0)
+    userID = users[0];
+    kinect.startTrackingSkeleton(userID);
+    if (kinect.isTrackingSkeleton(userID))
+      println(thighLength('r'));
     fill(0);
     rect(0, 0, width, height);
     fill(255);
@@ -353,6 +361,6 @@ double thighLength(char c){
   }
   else
     return -1.0;
-  
+ 
   return dist(hipJoint.x,hipJoint.y,kneeJoint.x,kneeJoint.y);
 }
