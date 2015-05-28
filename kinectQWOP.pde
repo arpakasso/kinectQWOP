@@ -364,3 +364,24 @@ double thighLength(char c){
  
   return dist(hipJoint.x,hipJoint.y,kneeJoint.x,kneeJoint.y);
 }
+
+double footHeight(char c) {
+  PVector temp = new PVector();
+  PVector foot = new PVector();
+  if (c == 'r') {
+    float con1 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_RIGHT_FOOT, temp);
+    if (con1 < 0.5)
+      return -1.0;
+    kinect.convertRealWorldToProjective(temp, foot);
+  } 
+  else if (c == 'l') {
+    float con2 = kinect.getJointPositionSkeleton(userID, SimpleOpenNI.SKEL_LEFT_FOOT, temp);
+    if (con2 < 0.5)
+      return -1.0;
+    kinect.convertRealWorldToProjective(temp, foot);
+  } 
+  else
+    return -1.0;
+    
+  return dist(foot.x,foot.y,foot.x,height);
+}
