@@ -5,9 +5,12 @@ import ddf.minim.*;
 import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
+import SimpleOpenNI.*;
+
+SimpleOpenNI kinect;
 
 Camera cameron;
-int treesX;
+
 boolean david;
 boolean wesley; //create game
 Minim dj;
@@ -30,12 +33,16 @@ FCircle head;
 
 
 void setup() {
+  
+  kinect = new SimpleOpenNI(this, SimpleOpenNI.RUN_MODE_MULTI_THREADED); //mycomp
+  //kinect = new SimpleOpenNI(this, SimpleOpenNI.RUN_MODE_SINGLE_THREADED); //school maybe?
   wesley = false;
   david = false;
   distance = 0;
   dj = new Minim(this);
   breakNeck = dj.loadFile("neckSnap.wav");
   size(800, 400, P3D);
+
   background(100);
   smooth();
 
@@ -56,21 +63,29 @@ void setup() {
 
   createGame();
   cameron = new Camera(this, width/2, height/2, 336, width/2, height/2, 0);
+  kinect.enableDepth();
+ kinect.enableUser();
 }
 
 void draw() {
+  
+   kinect.update();
   background(100);
+  
   if (!wesley)    //title screen
   {
+    
     fill(0);
     rect(0, 0, width, height);
     fill(255);
     text("Kinect QWOP", width/2, height/5);
     text("Press 'S' to begin", width/2, height/5 * 3);
+   
   }
   // Execute a step of the simulation
   else //the game n stuff
   {
+    
     noStroke();
     fill(135,206,250); //sky blue
     rect(0,0,width*500, height); //the sky
@@ -99,8 +114,9 @@ void draw() {
       cameron.truck(torso.getX()-cameron.position()[0]);
 
     cameron.feed();
-//    if (head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
-//      endGame();
+    
+    if (head.isTouchingBody(floor) || armL.isTouchingBody(floor) || armR.isTouchingBody(floor))
+      endGame();
   }
 }
 
@@ -299,7 +315,6 @@ void resetGame() {
   for (Object o : world.getBodies ())
     world.remove((FBody)o);
   david = false;
-  treesX = 0;
   breakNeck.rewind();  
   createGame();
 }
