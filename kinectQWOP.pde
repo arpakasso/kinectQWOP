@@ -15,6 +15,7 @@ boolean david;
 boolean wesley; //create game
 Minim dj;
 AudioPlayer breakNeck;
+float distance, yONE, yTWO;
 int userID;
 PFont font;
 
