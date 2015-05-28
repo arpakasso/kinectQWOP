@@ -15,7 +15,6 @@ boolean david;
 boolean wesley; //create game
 Minim dj;
 AudioPlayer breakNeck;
-float distance;
 int userID;
 PFont font;
 
@@ -79,14 +78,25 @@ void draw() {
    
   background(100);
   
+  
+  
   if (!wesley)    //title screen
   {
     int[] users = kinect.getUsers();
     if(users.length > 0)
     userID = users[0];
     kinect.startTrackingSkeleton(userID);
-    if (kinect.isTrackingSkeleton(userID))
+    if (kinect.isTrackingSkeleton(userID)){
+      PVector temp = new PVector();
+      kinect.getCoM(userID,temp);
+      kinect.convertRealWorldToProjective(temp,temp);
+      yONE = temp.y;
+      
       println(thighLength('r'));
+    }
+    
+    if(jumped())
+      wesley = true;
     fill(0);
     rect(0, 0, width, height);
     fill(255);
@@ -384,4 +394,12 @@ double footHeight(char c) {
     return -1.0;
     
   return dist(foot.x,foot.y,foot.x,height);
+}
+
+boolean jumped(){
+  PVector curr = new PVector();
+  kinect.getCoM(userID,curr);
+  kinect.convertRealWorldToProjective(curr,curr);
+  yTWO = curr.y;
+  return yONE+30 < yTWO;
 }
